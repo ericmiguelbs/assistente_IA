@@ -1,8 +1,8 @@
 import streamlit as st
-import assistente
+import requests
 
 st.set_page_config(
-    page_title='TecAssis',
+    page_title='CodePilot',
     page_icon='',
     layout='wide',
     initial_sidebar_state='expanded'
@@ -17,6 +17,20 @@ st.caption("Pergunte sobre programação ou tecnologia e receba respostas com ex
 #histórico de mensagens na sessão
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+    try:
+        response = requests.get("http://192.168.15.8:5000/historico")
+        historico = response.json()
+
+        for item in historico:
+            st.session_state.messages.append(
+                {"role":"user", "content": item["pergunta"]}
+            )
+            st.session_state.messages.append(
+                {"role":"assistant","content":item["resposta"]}
+            )
+    except:
+        pass
 
 #exibe as mensagens anteriores
 for message in st.session_state.messages:
@@ -35,14 +49,20 @@ if prompt := st.chat_input("Qual sua dúvida sobre Python?"):
     with st.chat_message("assistant"):
         with st.spinner("Analisando sua mensagem..."):
             try:
-                assistente_resposta = assistente.agente(messages_for_api)
-                
+                response = requests.post(
+                    "http://192.168.15.8:5000/pergunta",
+                    json={"pergunta": prompt}
+                )
+
+                assistente_resposta = response.json()["resposta"]
+
                 st.markdown(assistente_resposta)
 
                 st.session_state.messages.append({"role":"assistant", "content":assistente_resposta})
             
             except Exception as e:
                 st.error(f"Ocorreu um erro ao se comunicar com a API da Groq: {e}")
+
 
 
 
