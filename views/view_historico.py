@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from datetime import datetime
 
-st.title("📜 Histórico de Consultas")
+st.title("Histórico de Consultas")
 
 @st.cache_data(ttl=60)
 def get_api_data():
