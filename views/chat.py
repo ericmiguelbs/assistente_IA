@@ -1,13 +1,6 @@
 import streamlit as st
 import requests
 
-st.set_page_config(
-    page_title='CodePilot',
-    page_icon='',
-    layout='wide',
-    initial_sidebar_state='expanded'
-)
-
 st.title("CodePilot")
 
 st.caption("Seu copiloto de programação para resolver dúvidas e acelerar seu desenvolvimento.")
@@ -50,7 +43,7 @@ if prompt := st.chat_input("Qual sua dúvida sobre Python?"):
         with st.spinner("Analisando sua mensagem..."):
             try:
                 response = requests.post(
-                    "http://192.168.15.8:5000/pergunta",
+                    "http://127.0.0.1:5000/pergunta",
                     json={"pergunta": prompt}
                 )
 
@@ -62,8 +55,3 @@ if prompt := st.chat_input("Qual sua dúvida sobre Python?"):
             
             except Exception as e:
                 st.error(f"Ocorreu um erro ao se comunicar com a API da Groq: {e}")
-
-
-
-
-
